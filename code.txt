@@ -1,0 +1,56 @@
+
+const Express = require("express");
+const BodyParser = require("body-parser");
+const MongoClient = require("mongodb").MongoClient;
+const ObjectId = require("mongodb").ObjectID;
+const bakasabl = require("./sandbox.js");
+const imdb = require('./src/imdb');
+
+const CONNECTION_URL = "mongodb+srv://antoine.rouillier@devinci.fr:Antoine15091998@denzelcluster-anseg.azure.mongodb.net/test?retryWrites=true";
+const DATABASE_NAME = "DenzelDB";
+
+var app = Express();
+
+app.use(BodyParser.json());
+app.use(BodyParser.urlencoded({ extended: true }));
+
+var database, collection;
+
+app.set('port', process.env.PORT || 9292);
+
+app.listen(9292, () => {
+    MongoClient.connect(CONNECTION_URL, { useNewUrlParser: true }, (error, client) => {
+        if(error) {
+            throw error;
+        }
+        database = client.db(DATABASE_NAME);
+        collection = database.collection("people");
+        console.log("Connected to `" + DATABASE_NAME + "`!");
+    });
+});
+
+app.post("/person", (request, response) => {
+    collection.insert(request.body, (error, result) => {
+        if(error) {
+            return response.status(500).send(error);
+        }
+        response.send(result.result);
+    });
+});
+
+
+async function sandbox (actor) {
+    try {
+      console.log(`📽️  fetching filmography of ${actor}...`);
+      const movies = await imdb(actor);
+      console.log(`🍿 ${movies.length} movies found.`);
+      console.log(JSON.stringify(movies, null, 2));
+      process.exit(0);
+      
+    } catch (e) {
+      console.error(e);
+      process.exit(1);
+    }
+  }
+
+  console.log(bakasabl.awesome)
