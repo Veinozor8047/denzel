@@ -1,3 +1,25 @@
+#Realisation Du Code
+
+## Back
+
+Le back contient toutes les API REST get et post ainsi que le graphql.
+
+## Front
+
+Réalisation d'un interface à l'aide d'un component renvoyant un film aléatoire grace a l'API.
+J'ai essayé d'afficher le poster ainsi que le titre et le socre du film sans succès à cause d'un erreure de DOM
+
+```sh
+<Card>
+        <CardImg top width="100%" src={items[random].poster} alt="Card image cap" />
+        <CardBody>
+          <CardTitle>{items[random].title}</CardTitle>
+          <CardSubtitle>Notation : {items[random].metascore}</CardSubtitle>
+          <CardText>{items[random].synopsis}</CardText>
+        </CardBody>
+      </Card>
+```
+
 # DENZEL
 
 > The must-watch Denzel's movies
