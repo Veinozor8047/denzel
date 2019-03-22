@@ -4,7 +4,7 @@ const _ = require('lodash')
 const { 
     GraphQLObjectType,
     GraphQLString,
-    GraphQLNumber,
+    GraphQLInt,
     GraphQLSchema,
     GraphQLID
 } = graphql;
@@ -17,10 +17,10 @@ var movies=[
 ]
 
 const MovieType = new GraphQLObjectType({
-    name: 'Movie',
+    name: 'movie',
     fields:()=>({
-        id: {type: GraphQLString},
-        metascore: {type: GraphQLString},
+        id: {type: GraphQLID},
+        metascore: {type: GraphQLInt},
         title: {type: GraphQLString}
     })
 })
@@ -34,14 +34,11 @@ const RootQuery = new GraphQLObjectType({
             resolve(parent,args){
                 //getting the data from MongoDB
                 //console.log(typeof(args.id))
-                return _.find(movies, {id:args.id});
-
+                return _.find(movies, {id: args.id});
             }
         }
     }
-
 })
-
 
 module.exports = new GraphQLSchema({
     query: RootQuery

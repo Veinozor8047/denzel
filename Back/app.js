@@ -36,14 +36,14 @@ app.listen(9292, () => {
             throw error;
         }
         database = client.db(DATABASE_NAME);
-        collection = database.collection("AllMovies");
+        collection = database.collection("DenzelCluster");
         collectionWorkable = database.collection("ToReview")
         console.log("Connected to `" + DATABASE_NAME + "`");
     });
 });
 
 //PostMan
-app.post("/movies/populate", async(request, response) => {
+app.get("/movies/populate", async(request, response) => {
     const all = await imdb(DENZEL_IMDB_ID);
 
     collection.insert(all, (error, result) => {
@@ -63,17 +63,16 @@ app.post("/movies/populate", async(request, response) => {
     });
 });
 app.get("/movies", (request, response) => {
-    collection.find({metascore:{$gt:70}}).toArray((error, result) => {
+    collection.find({"metascore":{"$gte":70}}).toArray((error, result) => {
         if(error) {
             return response.status(500).send(error);
         }
         var random = result[Math.floor((Math.random()*result.length-1)+1)]
         response.send(random);
-        //console.log(result.length-1)
+        console.log(random.metascore);
     });
 });
 app.get("/movies/search", (request, response) => {
-    console.log(request)
     var SrcLimit=5;
     var SrcMeta=0;
     if(request.query.metascore!=null){
@@ -82,11 +81,10 @@ app.get("/movies/search", (request, response) => {
     if(request.query.limit!=null){
         SrcLimit=Number(request.query.limit);
     }
-    collection.find({"metascore":{"$gt":SrcMeta-1}}).limit(SrcLimit).toArray((error, result) => {
+    collection.find({"metascore":{"$gte":SrcMeta}}).limit(SrcLimit).toArray((error, result) => {
         if(error) {
             return response.status(500).send(error);
         }
-        //console.log(request.query.metascore)
         response.send(result);
     });
 });
@@ -95,7 +93,6 @@ app.get("/movies/:id", (request, response) => {
         if(error) {
             return response.status(500).send(error);
         }
-        //console.log("moviesid")
         response.send(result);
     });
 });
@@ -114,7 +111,6 @@ app.post("/movies/:id", (request, response) => {
 //graphql
 app.use('/graphql', graphqlHTTP({
     schema,
-    context:{collection},
     graphiql: true
 }));
 

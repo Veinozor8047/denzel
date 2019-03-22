@@ -12,7 +12,8 @@
     "node-fetch": "^2.3.0",
     "p-limit": "^2.2.0",
     "p-settle": "^2.1.0",
-    "random": "^2.1.1"
+    "random": "^2.1.1",
+    "react": "^16.8.4"
   },
   "main": "sandbox.js",
   "devDependencies": {},
